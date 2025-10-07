@@ -40,15 +40,27 @@ class ReservationsService {
   /// Crear nueva reserva
   Future<void> reservarLibro(int userId, int libroId, int cantidad) async {
     const sql = """
-      INSERT INTO reserva (id_usuario, id_libro, estado)
-      VALUES (@userId, @libroId, 'pendiente');
-    """;
+    INSERT INTO reserva (id_usuario, id_libro, cantidad, estado)
+    VALUES (@userId, @libroId, @cantidad, 'pendiente');
+  """;
 
-    final affected = await NeonDb.execute(
-      sql,
-      params: {"userId": userId, "libroId": libroId},
-    );
-    debugPrint("✅ Reserva creada (rows: $affected)");
+    try {
+      final affected = await NeonDb.execute(
+        sql,
+        params: {
+          "userId": userId,
+          "libroId": libroId,
+          "cantidad": cantidad,
+        },
+      );
+      debugPrint("✅ Reserva creada (rows: $affected)");
+    } catch (e) {
+      if (e.toString().contains("No hay suficiente stock")) {
+        throw Exception("No hay suficiente stock disponible.");
+      } else {
+        rethrow;
+      }
+    }
   }
 
   /// Unirse a lista de espera (cuando no hay stock)
