@@ -30,36 +30,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # 🆕 Instalar herramientas de Android requeridas (Solución al error de adb)
-      - name: Install Android SDK Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y android-sdk adb
-
-      # 5️⃣ Configurar Android SDK y emulador + Ejecutar tests
-      - name: Run integration tests on Android Emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 33
-          target: google_apis
-          arch: x86_64
-          force-avd-creation: true
-          # 👇 Limitamos recursos para que quepa en el runner estándar
-          ram-size: 1024M
-          heap-size: 256M
-          disk-size: 2048M
-          emulator-options: "-no-window -no-audio -no-boot-anim -camera-back none"
-          disable-animations: true
-          script: flutter test integration_test/test_suite.dart
-      # 6️⃣ Aceptar licencias SDK Android (recomendado)
-      - name: Accept Android licenses
-        run: yes | sdkmanager --licenses
-
       # 7️⃣ Test unitarios
-      - name: Run unit tests
+      - name: Execute Unit, Integration, and E2E Tests
         run: flutter test --coverage
-
-      # (El paso 8 original se eliminó porque ya se ejecuta dentro del paso del emulador)
 
       # 9️⃣ Compilar APK (solo para validar build)
       - name: Build APK
