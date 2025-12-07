@@ -25,7 +25,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
       Provider.of<LibroViewModel>(context, listen: false)
           .fetchLibroDetalle(widget.idLibro);
 
-      // cargar reseñas
+      // Cargar reseñas
       Provider.of<OpinionViewModel>(context, listen: false)
           .fetchOpiniones(widget.idLibro);
     });
@@ -35,11 +35,10 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
   Widget build(BuildContext context) {
     final libroVM = Provider.of<LibroViewModel>(context);
     final opinionVM = Provider.of<OpinionViewModel>(context);
-    final favVM = Provider.of<FavoritesViewModel>(context, listen: false);
     final reservaVM = Provider.of<ReservationsViewModel>(context, listen: false);
     final profileVM = Provider.of<ProfileViewModel>(context, listen: false);
 
-    final userId = profileVM.idUsuario ?? 1; // mock en caso de null
+    final userId = profileVM.idUsuario ?? 1;
 
     if (libroVM.isLoading) {
       return const Scaffold(
@@ -61,6 +60,8 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
       );
     }
 
+    final hasStock = book.disponibles > 0;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Detalles del Libro"),
@@ -71,7 +72,8 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
         actions: [
           Consumer<FavoritesViewModel>(
             builder: (context, favVM, _) {
-              final isFav = favVM.favoritos.any((f) => f["idLibro"] == book.idLibro);
+              final isFav =
+              favVM.favoritos.any((f) => f["idLibro"] == book.idLibro);
               return IconButton(
                 onPressed: () async {
                   if (isFav) {
@@ -94,7 +96,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🔹 Portada
+            // 📘 Portada
             Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
@@ -111,10 +113,10 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
             ),
             const SizedBox(height: 16),
 
-            // 🔹 Título + Autores
+            // 📖 Título y autor
             Text(book.titulo,
-                style: const TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.bold)),
+                style:
+                const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             Text(book.autores ?? "Autor desconocido",
                 style: const TextStyle(
                     fontSize: 14,
@@ -122,7 +124,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                     fontWeight: FontWeight.w500)),
             const SizedBox(height: 8),
 
-            // 🔹 Rating + año + editorial
+            // ⭐ Rating + año + editorial
             Row(
               children: [
                 Icon(Icons.star, color: Colors.amber.shade700, size: 18),
@@ -139,18 +141,17 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 text: book.editorial ?? "Editorial desconocida"),
             const SizedBox(height: 12),
 
-            // 🔹 Disponibilidad
+            // 📦 Disponibilidad
             Text(
               "${book.disponibles} disponibles",
               style: TextStyle(
-                color: book.disponibles > 0 ? Colors.green : Colors.red,
-                fontWeight: FontWeight.w500,
+                color: hasStock ? Colors.green : Colors.red,
+                fontWeight: FontWeight.w600,
               ),
             ),
-
             const SizedBox(height: 20),
 
-            // 🔹 Descripción
+            // 📚 Descripción
             const Text("Descripción",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 6),
@@ -160,7 +161,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
             ),
             const SizedBox(height: 20),
 
-            // 🔹 Detalles extra
+            // 📑 Detalles
             const Text("Detalles del libro",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 6),
@@ -170,7 +171,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                 label: "Editorial", value: book.editorial ?? "Editorial"),
             const SizedBox(height: 20),
 
-            // 🔹 Reseñas
+            // 💬 Reseñas
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -178,8 +179,8 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                     style:
                     TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 TextButton(
-                  onPressed: () =>
-                      _showReviewDialog(context, opinionVM, userId, book.idLibro),
+                  onPressed: () => _showReviewDialog(
+                      context, opinionVM, userId, book.idLibro),
                   child: const Text("Escribir reseña"),
                 ),
               ],
@@ -216,23 +217,43 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
         ),
       ),
 
-      // 🔹 Footer con cantidad + reservar o lista de espera
+      // 🦶 Footer de reservas
       bottomNavigationBar: _ReservationFooter(
         quantity: quantity,
         disponibles: book.disponibles,
         onQuantityChanged: (newQty) {
+          // Evita que se seleccione más que el stock
+          if (newQty > book.disponibles) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    "Solo hay ${book.disponibles} copias disponibles de ${book.titulo}"),
+              ),
+            );
+            return;
+          }
           setState(() => quantity = newQty);
         },
         onReserve: () async {
-          if (book.disponibles > 0) {
-            await reservaVM.reservarLibro(userId, book.idLibro, quantity);
+          try {
+            if (book.disponibles > 0) {
+              await reservaVM.reservarLibro(userId, book.idLibro, quantity);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    content: Text(
+                        "Reserva realizada (${quantity} copias de ${book.titulo})")),
+              );
+            } else {
+              await reservaVM.unirseListaEspera(userId, book.idLibro);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Te uniste a la lista de espera")),
+              );
+            }
+          } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Reserva realizada de ${book.titulo}")),
-            );
-          } else {
-            await reservaVM.unirseListaEspera(userId, book.idLibro);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Te uniste a la lista de espera")),
+              SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text("Error al reservar: ${e.toString()}")),
             );
           }
         },
