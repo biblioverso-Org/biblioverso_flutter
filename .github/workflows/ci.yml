@@ -40,9 +40,9 @@ jobs:
           force-avd-creation: true
           emulator-options: "-no-window -no-audio"
 
-      # 6️⃣ Esperar a que el emulador esté listo
-      - name: Wait for emulator
-        run: adb wait-for-device
+      # 6️⃣ Aceptar licencias SDK Android (recomendado)
+      - name: Accept Android licenses
+        run: yes | sdkmanager --licenses
 
       # 7️⃣ Test unitarios
       - name: Run unit tests
