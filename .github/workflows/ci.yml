@@ -11,36 +11,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout del repositorio
+      # 1️⃣ Checkout del repositorio
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Instalación de Flutter
+      # 2️⃣ Instalación de Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
 
-      # Ver versión de Flutter
+      # 3️⃣ Ver versión de Flutter
       - name: Flutter version
         run: flutter --version
 
-      # Instalar dependencias
+      # 4️⃣ Instalar dependencias
       - name: Install dependencies
         run: flutter pub get
 
+      # 5️⃣ Configurar Android SDK y emulador
+      - name: Setup Android Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          target: google_apis
+          arch: x86_64
+          force-avd-creation: true
+          emulator-options: "-no-window -no-audio"
 
-      # Test unitarios
+      # 6️⃣ Esperar a que el emulador esté listo
+      - name: Wait for emulator
+        run: adb wait-for-device
+
+      # 7️⃣ Test unitarios
       - name: Run unit tests
         run: flutter test --coverage
 
-      # 🔥 Tests de integración
+      # 8️⃣ 🔥 Tests de integración en Android emulator
       - name: Run integration tests
-        run: flutter test integration_test/test_suite.dart
+        run: flutter test integration_test/test_suite.dart -d emulator-5554
 
-      # Compilar APK (solo para validar build)
+      # 9️⃣ Compilar APK (solo para validar build)
       - name: Build APK
-        run: flutter build apk
-
-
+        run: flutter build apk --release
