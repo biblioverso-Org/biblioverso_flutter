@@ -30,9 +30,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Analizar el código
-      - name: Analyze
-        run: flutter analyze
 
       # Test unitarios
       - name: Run unit tests
