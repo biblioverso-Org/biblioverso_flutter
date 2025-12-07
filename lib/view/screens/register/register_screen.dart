@@ -21,10 +21,12 @@ class RegisterScreen extends StatelessWidget {
                 "lib/assets/animations/Register.json",
                 width: 200,
                 height: 200,
+                key: const Key('registerAnimation'), // ✅ key
               ),
               const SizedBox(height: 20),
               Text(
                 "Crear Cuenta",
+                key: const Key('registerTitle'), // ✅ key
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Colors.deepPurple,
@@ -32,6 +34,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               TextField(
+                key: const Key('nameField'), // ✅ key
                 controller: vm.nameController,
                 decoration: const InputDecoration(
                   labelText: "Nombres",
@@ -41,6 +44,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
+                key: const Key('apellidoField'), // ✅ key
                 controller: vm.apellidoController,
                 decoration: const InputDecoration(
                   labelText: "Apellidos",
@@ -50,6 +54,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
+                key: const Key('emailField'), // ✅ key
                 controller: vm.emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
@@ -60,6 +65,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
+                key: const Key('passwordField'), // ✅ key
                 controller: vm.passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
@@ -70,8 +76,11 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               vm.loading
-                  ? const CircularProgressIndicator()
+                  ? const CircularProgressIndicator(
+                key: Key('loadingIndicator'), // ✅ key
+              )
                   : ElevatedButton(
+                key: const Key('registerButton'), // ✅ key
                 onPressed: () => vm.register(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
@@ -87,6 +96,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 15),
               TextButton(
+                key: const Key('loginButton'), // ✅ key
                 onPressed: () => Navigator.pushNamed(context, "/login"),
                 child: const Text("¿Ya tienes cuenta? Inicia sesión"),
               ),

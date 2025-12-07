@@ -10,7 +10,7 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = Provider.of<WelcomeViewModel>(context);
 
-    return Scaffold(
+    return Scaffold( key: const Key('welcomeScreen'),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
@@ -51,6 +51,7 @@ class WelcomeScreen extends StatelessWidget {
               Column(
                 children: [
                   ElevatedButton(
+                    key: const Key('goToLogin'), // ✅ Key para test
                     onPressed: () => vm.goToLogin(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepPurple,
@@ -65,7 +66,7 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  OutlinedButton(
+                  OutlinedButton(key: const Key('goToRegister'), // ✅ Key para test
                     onPressed: () => vm.goToRegister(context),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.deepPurple, width: 2),

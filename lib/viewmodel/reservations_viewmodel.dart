@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import '../data/services/reservations_service.dart';
 
 class ReservationsViewModel extends ChangeNotifier {
-  final ReservationsService _service = ReservationsService();
+  final ReservationsService _service;
+
+  ReservationsViewModel({ReservationsService? service})
+      : _service = service ?? ReservationsService();
 
   List<Map<String, dynamic>> activeReservations = [];
   List<Map<String, dynamic>> historyReservations = [];

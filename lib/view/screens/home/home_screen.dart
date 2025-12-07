@@ -53,14 +53,11 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Botón central flotante
           Positioned(
             top: -25,
             left: MediaQuery.of(context).size.width / 2 - 30,
             child: GestureDetector(
-              onTap: () {
-                // Por ahora no hace nada
-              },
+              onTap: () {},
               child: Container(
                 height: 60,
                 width: 60,
@@ -89,6 +86,7 @@ class HomeScreen extends StatelessWidget {
       BuildContext context, HomeViewModel vm, IconData icon, String label, int index) {
     final isSelected = vm.selectedIndex == index;
     return GestureDetector(
+      key: Key('navItem_$index'), // ✅ Key para testing
       onTap: () => vm.onTabTapped(index),
       child: Column(
         mainAxisSize: MainAxisSize.min,

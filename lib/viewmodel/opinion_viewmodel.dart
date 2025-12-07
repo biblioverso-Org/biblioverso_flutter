@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import '../data/services/opinion_service.dart';
 
 class OpinionViewModel extends ChangeNotifier {
-  final OpinionService _service = OpinionService();
+  OpinionService _service = OpinionService(); // ← ya no es final
 
   List<Map<String, dynamic>> opiniones = [];
   bool isLoading = false;
   String? errorMessage;
+
+  // ✔️ Solo para test — no afecta producción
+  void setServiceForTest(OpinionService service) {
+    _service = service;
+  }
 
   Future<void> fetchOpiniones(int libroId) async {
     try {

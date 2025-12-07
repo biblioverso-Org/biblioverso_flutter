@@ -7,7 +7,10 @@ class LoginViewModel extends ChangeNotifier {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  final UsuarioService _usuarioService = UsuarioService();
+  final UsuarioService _usuarioService;
+
+  LoginViewModel({UsuarioService? usuarioService})
+      : _usuarioService = usuarioService ?? UsuarioService();
 
   bool _loading = false;
   bool get loading => _loading;
@@ -21,7 +24,6 @@ class LoginViewModel extends ChangeNotifier {
   Future<void> login(BuildContext context) async {
     _setLoading(true);
 
-    // ✅ Capturamos antes los objetos que usan context
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
 
@@ -31,12 +33,11 @@ class LoginViewModel extends ChangeNotifier {
         passwordController.text.trim(),
       );
 
-      if (!context.mounted) return; // Seguridad
+      if (!context.mounted) return;
 
       if (user != null) {
         _usuarioActual = user;
 
-        // ✅ Guardar sesión completa
         await SessionManager.saveLoginSession(user);
 
         if (!context.mounted) return;

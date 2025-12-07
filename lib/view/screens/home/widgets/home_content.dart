@@ -88,6 +88,7 @@ class _HomeContentState extends State<HomeContent> {
                             .length;
 
                         return IconButton(
+                            key: const Key('notificationsButton'),
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -128,8 +129,10 @@ class _HomeContentState extends State<HomeContent> {
 ,
           // ✅ Barra de búsqueda fija
           Padding(
+
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: GestureDetector(
+              key: const Key('searchBar'),
               onTap: () {
                 final homeVM = Provider.of<HomeViewModel>(
                   context,
@@ -195,6 +198,7 @@ class _HomeContentState extends State<HomeContent> {
                           itemBuilder: (context, index) {
                             final categoria = vm.categorias[index];
                             return GestureDetector(
+                              key: Key('categoryCard_$index'),
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -238,7 +242,7 @@ class _HomeContentState extends State<HomeContent> {
                       return Row(
                         children: [
                           Expanded(
-                            child: GestureDetector(
+                            child: GestureDetector(key: const Key('quickAccess_reservas'),
                               onTap: () {
                                 final homeVM = Provider.of<HomeViewModel>(
                                   context,
@@ -257,6 +261,7 @@ class _HomeContentState extends State<HomeContent> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: GestureDetector(
+                              key: const Key('quickAccess_favoritos'),
                               onTap: () {
                                 Navigator.pushNamed(context, "/favorites");
                               },
@@ -333,6 +338,7 @@ class _HomeContentState extends State<HomeContent> {
                         children:
                             vm.novedades.map((book) {
                               return _ListBookTile(
+
                                 book["title"] ?? "",
                                 book["editorial"] ?? "Editorial desconocida",
                                 book["category"] ?? "No hay cataegoria",

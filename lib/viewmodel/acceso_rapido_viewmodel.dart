@@ -2,24 +2,26 @@ import 'package:flutter/material.dart';
 import '../data/services/acceso_rapido_service.dart';
 
 class AccesoRapidoViewModel extends ChangeNotifier {
-  final AccesoRapidoService _service = AccesoRapidoService();
-
+  final AccesoRapidoService service; // solo uno
   int reservasActivas = 0;
   int favoritos = 0;
   bool isLoading = false;
   String? errorMessage;
+
+  AccesoRapidoViewModel({AccesoRapidoService? service})
+      : service = service ?? AccesoRapidoService();
 
   Future<void> fetchAccesos(int userId) async {
     try {
       isLoading = true;
       notifyListeners();
 
-      reservasActivas = await _service.getReservasActivas(userId);
-      favoritos = await _service.getFavoritos(userId);
+      // ✅ Usamos el service inyectado, no _service
+      reservasActivas = await service.getReservasActivas(userId);
+      favoritos = await service.getFavoritos(userId);
 
       errorMessage = null;
 
-      // ✅ Solo debug, no afecta producción
       debugPrint(
           "✅ Acceso rápido → reservas=$reservasActivas, favoritos=$favoritos");
     } catch (e) {

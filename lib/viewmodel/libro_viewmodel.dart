@@ -6,7 +6,9 @@ import '../data/services/libro_service.dart';
 enum LibroOrden { relevancia, titulo, editorial, disponibilidad, anio }
 
 class LibroViewModel extends ChangeNotifier {
-  final LibroService _service = LibroService();
+  final LibroService _service;
+
+  LibroViewModel({LibroService? service}) : _service = service ?? LibroService();
 
   List<Libro> libros = [];
   bool isLoading = false;

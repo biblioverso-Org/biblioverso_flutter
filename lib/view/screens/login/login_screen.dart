@@ -21,10 +21,12 @@ class LoginScreen extends StatelessWidget {
                 "lib/assets/animations/Login.json",
                 width: 250,
                 height: 250,
+                key: const Key('loginAnimation'),
               ),
               const SizedBox(height: 20),
               Text(
                 "Inicia Sesión",
+                key: const Key('loginTitle'),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Colors.deepPurple,
@@ -32,6 +34,7 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               TextField(
+                key: const Key('emailField'),
                 controller: vm.emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
@@ -42,6 +45,7 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextField(
+                key: const Key('passwordField'),
                 controller: vm.passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
@@ -52,8 +56,11 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               vm.loading
-                  ? const CircularProgressIndicator()
+                  ? const CircularProgressIndicator(
+                key: Key('loadingIndicator'),
+              )
                   : ElevatedButton(
+                key: const Key('loginButton'),
                 onPressed: () => vm.login(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepPurple,
@@ -69,6 +76,7 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 15),
               TextButton(
+                key: const Key('registerButton'),
                 onPressed: () => Navigator.pushNamed(context, "/register"),
                 child: const Text("¿No tienes cuenta? Regístrate"),
               ),

@@ -4,7 +4,8 @@ import '../data/services/home_service.dart';
 class HomeViewModel extends ChangeNotifier {
   int _selectedIndex = 0;
   int get selectedIndex => _selectedIndex;
-  final HomeService _service = HomeService();
+
+  final HomeService _service;
 
   List<Map<String, dynamic>> novedades = [];
   bool isLoading = false;
@@ -13,6 +14,9 @@ class HomeViewModel extends ChangeNotifier {
   List<Map<String, dynamic>> destacados = [];
   bool isLoadingDestacados = false;
   String? errorMessageDestacados;
+
+  // 🔹 Constructor permite inyección de servicio para tests
+  HomeViewModel({HomeService? service}) : _service = service ?? HomeService();
 
   void onTabTapped(int index) {
     _selectedIndex = index;
@@ -34,7 +38,6 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  /// Obtener destacados
   Future<void> fetchDestacados() async {
     try {
       isLoadingDestacados = true;
@@ -49,5 +52,4 @@ class HomeViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-
 }

@@ -28,6 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: const Key('splashScreen'),
       backgroundColor: Colors.white, // color principal de la marca
       body: Center(
         child: Column(

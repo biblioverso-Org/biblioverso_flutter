@@ -8,7 +8,10 @@ class RegisterViewModel extends ChangeNotifier {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  final UsuarioService _usuarioService = UsuarioService();
+  final UsuarioService _usuarioService;
+
+  RegisterViewModel({UsuarioService? usuarioService})
+      : _usuarioService = usuarioService ?? UsuarioService();
 
   bool _loading = false;
   bool get loading => _loading;

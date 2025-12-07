@@ -1,0 +1,49 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout del repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Instalación de Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # Ver versión de Flutter
+      - name: Flutter version
+        run: flutter --version
+
+      # Instalar dependencias
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Analizar el código
+      - name: Analyze
+        run: flutter analyze
+
+      # Test unitarios
+      - name: Run unit tests
+        run: flutter test --coverage
+
+      # 🔥 Tests de integración
+      - name: Run integration tests
+        run: flutter test integration_test/test_suite.dart
+
+      # Compilar APK (solo para validar build)
+      - name: Build APK
+        run: flutter build apk
+
+

@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import '../data/services/notificaciones_service.dart';
 
 class NotificacionesViewModel extends ChangeNotifier {
-  final _service = NotificacionesService();
+  NotificacionesService _service = NotificacionesService(); // ← ya no es final
 
   List<Map<String, dynamic>> notificaciones = [];
   bool isLoading = false;
   String? errorMessage;
+
+  // ✔️ Solo para tests (no afecta producción)
+  void setServiceForTest(NotificacionesService service) {
+    _service = service;
+  }
 
   Future<void> fetchNotificaciones(int userId) async {
     try {
